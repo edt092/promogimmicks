@@ -127,7 +127,7 @@ export default function Footer() {
               &copy; {currentYear} PromoGimmicks. Todos los derechos reservados.
             </p>
             <p className="text-gray-400 text-sm text-center md:text-right">
-              Diseñado por{' '}
+              Desarrollado por:{' '}
               <a
                 href="https://edwinbayonaitmanager.online"
                 target="_blank"

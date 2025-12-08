@@ -1,0 +1,13 @@
+# Configuración de Netlify para Next.js
+
+[build]
+  # Comando para construir el proyecto Next.js
+  command = "npm run build"
+  # Next.js usa el plugin de Netlify automáticamente
+  publish = ".next"
+
+# Configuración de funciones serverless
+[functions]
+  directory = "netlify/functions"
+  # Node version compatible
+  node_bundler = "esbuild"

@@ -6,6 +6,7 @@ import Servicios from '@/components/Servicios';
 import ProductosGallery from '@/components/ProductosGallery';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
+import ChatAdri from '@/components/ChatAdri';
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <ProductosGallery />
       <ContactSection />
       <Footer />
+      <ChatAdri />
     </main>
   );
 }
