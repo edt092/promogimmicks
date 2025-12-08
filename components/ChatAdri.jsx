@@ -288,20 +288,14 @@ const ChatAdri = () => {
       }
     }
 
-    // PRIORIDAD MÁXIMA: Extraer email PRIMERO (detecta @ automáticamente)
     const extractedEmail = extractEmail(text);
     const intent = detectIntent(text);
 
-    // ⭐ DETECCIÓN AUTOMÁTICA DE EMAIL - MÁXIMA PRIORIDAD
-    // Si se detecta un email en el mensaje, procesarlo inmediatamente
-    // sin importar el estado o la intención
-    if (extractedEmail) {
-      // Solo si NO estamos en estado 'completed' (para evitar procesar emails duplicados)
-      if (conversationState !== 'completed') {
-        // Mensaje de verificación
+    // Estado inicial - esperando respuesta sobre el catálogo
+    if (conversationState === 'initial') {
+      // ⭐ LÓGICA MEJORADA: Si el usuario da una respuesta afirmativa Y proporciona su email de una vez.
+      if (intent === 'affirmative' && extractedEmail) {
         sendAdriMessage(MESSAGES.verifyingEmail, 500);
-
-        // Después de un breve delay, confirmar
         setTimeout(() => {
           setConversationState('completed');
           const emailMessage = MESSAGES.emailVerified.replace('{email}', extractedEmail);
@@ -310,34 +304,21 @@ const ChatAdri = () => {
         }, 2000);
         return;
       }
-    }
 
-    // Estado inicial - esperando respuesta sobre el catálogo
-    if (conversationState === 'initial') {
-      // NUEVA: Usuario pregunta sobre el método de envío
-      if (intent === 'askingAboutDelivery') {
-        sendAdriMessage(MESSAGES.deliveryMethodClarification);
-        setConversationState('waiting_choice');
-        return;
-      }
-
-      // Flujo normal
       if (intent === 'affirmative') {
         setConversationState('waiting_choice');
         sendAdriMessage(MESSAGES.catalogRequest);
+      } else if (intent === 'askingAboutDelivery') {
+        sendAdriMessage(MESSAGES.deliveryMethodClarification);
+        setConversationState('waiting_choice');
       } else if (intent === 'negative') {
         setConversationState('completed');
         sendAdriMessage(MESSAGES.notInterested);
       } else if (intent === 'moreInfo') {
         sendAdriMessage(MESSAGES.moreInfo);
-      } else if (intent === 'goodbye') {
-        setConversationState('completed');
-        sendAdriMessage(MESSAGES.goodbye);
       } else if (intent === 'greeting') {
-        // Si el usuario solo saluda, re-ofrecer el catálogo
         sendAdriMessage("¡Hola! 😊 ¿Te gustaría recibir nuestro catálogo completo con más de 500 productos promocionales?");
       } else {
-        // Si no entendemos, repetir la pregunta de manera amigable
         sendAdriMessage("Perdón, no entendí bien. ¿Te gustaría recibir nuestro catálogo con más de 500 productos promocionales?");
       }
       return;
@@ -345,9 +326,12 @@ const ChatAdri = () => {
 
     // Esperando elección: email o whatsapp
     if (conversationState === 'waiting_choice') {
-      // NUEVA: Usuario pregunta sobre el método de envío (nuevamente)
-      if (intent === 'askingAboutDelivery') {
-        sendAdriMessage(MESSAGES.deliveryMethodClarification);
+      // Si el usuario envía el email en este paso
+      if (extractedEmail) {
+        setConversationState('completed');
+        const emailMessage = MESSAGES.emailReceived.replace('{email}', extractedEmail);
+        sendAdriMessage(emailMessage);
+        sendLeadNotification(extractedEmail);
         return;
       }
 
@@ -358,9 +342,6 @@ const ChatAdri = () => {
       } else if (intent === 'whatsapp') {
         setConversationState('completed');
         sendAdriMessage(MESSAGES.whatsappOption);
-      } else if (intent === 'goodbye') {
-        setConversationState('completed');
-        sendAdriMessage(MESSAGES.goodbye);
       } else {
         // Si no entendemos, repetir opciones de manera más directa
         sendAdriMessage("¿Prefieres que te envíe el catálogo por correo electrónico o por WhatsApp?");
@@ -370,8 +351,14 @@ const ChatAdri = () => {
 
     // Esperando email
     if (conversationState === 'waiting_email') {
-      // Email con formato inválido - pedir nuevamente
-      sendAdriMessage(MESSAGES.emailInvalidFormat);
+      if (extractedEmail) {
+        setConversationState('completed');
+        const emailMessage = MESSAGES.emailReceived.replace('{email}', extractedEmail);
+        sendAdriMessage(emailMessage);
+        sendLeadNotification(extractedEmail);
+      } else {
+        sendAdriMessage(MESSAGES.emailInvalidFormat);
+      }
       return;
     }
 
