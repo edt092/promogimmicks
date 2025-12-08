@@ -6,7 +6,7 @@ import { X, Send, MessageCircle } from 'lucide-react';
 
 // Mensajes predefinidos del flujo de conversación de Adri
 const MESSAGES = {
-  greetingInitial: "¡Hola! Soy Adri, tu asesora comercial de PromoGimmicks. Te damos la bienvenida al mundo de los productos promocionales que realmente funcionan. Tenemos un catálogo exclusivo con más de 500 productos ganadores que harán brillar tu marca. ¿Te gustaría que te enviemos el catálogo completo?",
+  greetingInitial: "Hola! Soy Adri, asesora comercial de PromoGimmicks. Contamos con un catálogo exclusivo de más de 500 productos promocionales que harán destacar tu marca. ¿Quieres que te envíe el catálogo completo?",
 
   // Respuestas afirmativas
   catalogRequest: "¡Excelente decisión! Tenemos dos formas de enviarte nuestro catálogo:\n\n📧 Por correo electrónico - Solo dime tu email y te lo envío al instante\n\n📱 Por WhatsApp - Escribe 'catalogo' al +593 99 859 4123 y te lo compartimos ahí mismo\n\n¿Cuál prefieres?",
