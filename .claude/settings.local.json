@@ -10,7 +10,9 @@
       "Bash(git push:*)",
       "Bash(npx fix-react2shell-next)",
       "Bash(npm update:*)",
-      "Bash(npm audit:*)"
+      "Bash(npm audit:*)",
+      "Bash(node test-chatbot-optimization.js:*)",
+      "Bash(node test-email-detection.js:*)"
     ],
     "deny": [],
     "ask": []

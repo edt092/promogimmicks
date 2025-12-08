@@ -8,15 +8,25 @@ import { X, Send, MessageCircle } from 'lucide-react';
 const MESSAGES = {
   greetingInitial: "Hola! Soy Adri, asesora comercial de PromoGimmicks. Contamos con un catálogo exclusivo de más de 500 productos promocionales que harán destacar tu marca. ¿Quieres que te envíe el catálogo completo?",
 
-  // Respuestas afirmativas
-  catalogRequest: "¡Excelente decisión! Tenemos dos formas de enviarte nuestro catálogo:\n\n📧 Por correo electrónico - Solo dime tu email y te lo envío al instante\n\n📱 Por WhatsApp - Escribe 'catalogo' al +593 99 859 4123 y te lo compartimos ahí mismo\n\n¿Cuál prefieres?",
+  // Respuestas afirmativas (con enlace de WhatsApp)
+  catalogRequest: "¡Excelente decisión! Tenemos dos formas de enviarte nuestro catálogo:\n\n📧 **Por correo electrónico**\nSolo dime tu email y te lo envío al instante.\n\n📱 **Por WhatsApp**\nHaz clic en el enlace para chatear conmigo y te lo envío por ahí:\nhttps://wa.me/593998594123?text=%C2%A1Hola%20Adri!%20%E2%9C%A8%20Vengo%20del%20chat%20de%20la%20web%20y%20me%20gustar%C3%ADa%20recibir%20el%20cat%C3%A1logo%20completo%20de%20PromoGimmicks.\n\n¿Cuál prefieres?",
 
   // Solicitar email
   askEmail: "Perfecto, por favor escríbeme tu correo electrónico y te enviaré nuestro catálogo completo de inmediato.",
   emailReceived: "¡Genial! He recibido tu correo: {email}\n\nTe enviaremos el catálogo en los próximos minutos. Revisa tu bandeja de entrada y también tu carpeta de spam, por si acaso.\n\nSi tienes alguna pregunta, no dudes en escribirnos. ¡Estamos aquí para ayudarte!",
 
-  // Opción WhatsApp
-  whatsappOption: "¡Perfecto! Para recibir el catálogo por WhatsApp:\n\n1️⃣ Guarda este número: +593 99 859 4123\n2️⃣ Envía un mensaje con la palabra 'catalogo'\n3️⃣ Te responderemos de inmediato con nuestro catálogo completo\n\n¿Hay algo más en lo que pueda ayudarte?",
+  // Email proactivo
+  proactiveEmailReceived: "¡Perfecto! Ya tengo tu correo: {email}\n\nTe enviaremos nuestro catálogo completo en los próximos minutos. Revisa tu bandeja de entrada y también la de spam.\n\n¿Hay algo más en lo que pueda ayudarte?",
+
+  // Mensaje de verificación de email (cuando se detecta automáticamente)
+  verifyingEmail: "¡Claro que sí! Déjame verificar tu correo... ⏳",
+  emailVerified: "¡Perfecto! Correo verificado: {email}\n\nTe enviaremos nuestro catálogo completo en los próximos minutos. Revisa tu bandeja de entrada y también la de spam.\n\n¿Hay algo más en lo que pueda ayudarte?",
+
+  // Opción WhatsApp (con enlace directo)
+  whatsappOption: "¡Perfecto! Para recibir el catálogo, solo tienes que hacer clic en el siguiente enlace y enviarme el mensaje:\n\nhttps://wa.me/593998594123?text=%C2%A1Hola%20Adri!%20%E2%9C%A8%20Vengo%20del%20chat%20de%20la%20web%20y%20me%20gustar%C3%ADa%20recibir%20el%20cat%C3%A1logo%20completo%20de%20PromoGimmicks.\n\n¡Te espero en WhatsApp! 😊",
+
+  // Mensaje aclaratorio sobre métodos de envío (NO por el chat)
+  deliveryMethodClarification: "El catálogo lo envío de dos formas:\n\n📧 **Por correo electrónico** - Te llega a tu bandeja de entrada\n📱 **Por WhatsApp** - Te lo comparto directamente por mensaje\n\n⚠️ No puedo enviártelo por este chat, pero puedo tomar tus datos para hacértelo llegar de inmediato. ¿Cuál de las dos opciones prefieres?",
 
   // Respuestas negativas o dudas
   notInterested: "Entiendo. Si cambias de opinión o tienes alguna pregunta sobre nuestros productos promocionales, estaré aquí para ayudarte. ¿Hay algo específico que te gustaría saber sobre nuestros productos?",
@@ -27,28 +37,91 @@ const MESSAGES = {
   // Despedida
   goodbye: "¡Gracias por contactarnos! Recuerda que puedes solicitar el catálogo en cualquier momento o escribirnos por WhatsApp al +593 99 859 4123. ¡Que tengas un excelente día!",
 
+  // Mensaje de recordatorio (cuando el usuario no responde)
+  reminderMessage: "¡Hola de nuevo! 👋\n\nEstoy aquí para ayudarte. Si necesitas información sobre nuestros productos promocionales o quieres recibir el catálogo completo, solo dímelo.\n\nTenemos más de 500 productos para hacer destacar tu marca. ¿Te gustaría conocerlos?",
+
   // Mensaje de error de validación de email (amable)
   emailInvalidFormat: "Veo que el formato del correo no es del todo correcto. ¿Podrías verificarlo? Debe ser algo como: tuempresa@ejemplo.com 😊",
 };
 
-// Palabras clave para detección de intenciones
+// Palabras clave para detección de intenciones (ampliadas)
 const KEYWORDS = {
-  affirmative: ['sí', 'si', 'claro', 'dale', 'ok', 'bueno', 'listo', 'vamos', 'quiero', 'me interesa', 'por favor', 'envíame', 'enviame', 'perfecto', 'genial'],
-  negative: ['no', 'nope', 'no gracias', 'ahora no', 'después', 'despues', 'luego'],
-  email: ['email', 'correo', 'mail', 'e-mail', 'electronico', 'electrónico'],
-  whatsapp: ['whatsapp', 'whats', 'wsp', 'wa', 'celular', 'teléfono', 'telefono', 'móvil', 'movil'],
-  moreInfo: ['información', 'informacion', 'info', 'saber', 'conocer', 'productos', 'precio', 'costo', 'cuánto', 'cuanto'],
-  goodbye: ['adiós', 'adios', 'chao', 'bye', 'hasta luego', 'gracias', 'nos vemos'],
+  affirmative: [
+    'sí', 'si', 'claro', 'dale', 'ok', 'bueno', 'listo', 'vamos',
+    'quiero', 'quisiera', 'me interesa', 'por favor', 'envíame', 'enviame',
+    'perfecto', 'genial', 'excelente', 'adelante', 'procede', 'aceptar',
+    'confirmo', 'deseo', 'acepto', 'seguro', 'obvio', 'desde luego',
+    'por supuesto', 'vale', 'okey', 'simon', 'sale'
+  ],
+  negative: [
+    'no', 'nope', 'no gracias', 'ahora no', 'después', 'despues',
+    'luego', 'más tarde', 'mas tarde', 'en otro momento', 'quizás',
+    'quizas', 'tal vez', 'no estoy seguro', 'no me interesa'
+  ],
+  email: [
+    'email', 'correo', 'mail', 'e-mail', 'electronico', 'electrónico',
+    '@', 'gmail', 'hotmail', 'outlook', 'yahoo'
+  ],
+  whatsapp: [
+    'whatsapp', 'whats', 'wsp', 'wa', 'celular', 'teléfono', 'telefono',
+    'móvil', 'movil', 'cel', 'número', 'numero'
+  ],
+  moreInfo: [
+    'información', 'informacion', 'info', 'saber', 'conocer',
+    'productos', 'precio', 'costo', 'cuánto', 'cuanto', 'detalles',
+    'opciones', 'qué ofrecen', 'que ofrecen', 'servicios'
+  ],
+  goodbye: [
+    'adiós', 'adios', 'chao', 'bye', 'hasta luego', 'gracias',
+    'nos vemos', 'hasta pronto', 'saludos', 'ciao'
+  ],
+  greeting: [
+    'hola', 'buenos días', 'buenas tardes', 'buenas noches', 'buen dia'
+  ],
+  // NUEVA: Pregunta sobre el método de envío
+  askingAboutDelivery: [
+    'a donde me envia', 'a donde me envía', 'a dónde me envia', 'a dónde me envía',
+    'donde me envia', 'donde me envía', 'dónde me envia', 'dónde me envía',
+    'por donde me envia', 'por donde me envía', 'por dónde me envia', 'por dónde me envía',
+    'como me envia', 'cómo me envia', 'como me envía', 'cómo me envía',
+    'de que forma me envia', 'de qué forma me envia', 'de que forma me envía',
+    'si me envia por aqui', 'si me envía por aquí', 'si me envia por aca', 'si me envía por acá',
+    'me lo envia por aqui', 'me lo envía por aquí', 'me lo envia por aca', 'me lo envía por acá',
+    'lo envias por aqui', 'lo envías por aquí', 'lo envias por aca', 'lo envías por acá',
+    'envias por el chat', 'envías por el chat', 'envia por el chat', 'envía por el chat',
+    'por este chat', 'por este medio', 'a través de que', 'mediante que'
+  ],
 };
 
 // Función para validar email con regex mejorada
 const isValidEmail = (email) => {
-  // Regex más estricta que valida:
-  // - Caracteres alfanuméricos, puntos, guiones y guiones bajos antes del @
-  // - Dominio con al menos un punto
-  // - TLD de al menos 2 caracteres
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(email.trim());
+  if (!email) return false;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(String(email).toLowerCase().trim());
+};
+
+// Función para extraer un email de un texto
+const extractEmail = (text) => {
+  if (!text) return null;
+  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+  const match = text.match(emailRegex);
+  return match ? match[0] : null;
+};
+
+// Función para renderizar texto con enlaces clicables
+const renderTextWithLinks = (text) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
 };
 
 // Función para enviar notificación al equipo de PromoGimmicks
@@ -81,9 +154,12 @@ const ChatAdri = () => {
   const [conversationState, setConversationState] = useState('initial'); // initial, waiting_choice, waiting_email, completed
   const [showBadge, setShowBadge] = useState(false);
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [hasUserResponded, setHasUserResponded] = useState(false);
+  const [reminderSent, setReminderSent] = useState(false);
 
   const messagesEndRef = useRef(null);
   const audioRef = useRef(null);
+  const reminderTimerRef = useRef(null);
 
   // Scroll automático al último mensaje
   const scrollToBottom = () => {
@@ -115,10 +191,41 @@ const ChatAdri = () => {
       setIsOpen(true);
       setShowBadge(false);
       sendAdriMessage(MESSAGES.greetingInitial);
+      // Iniciar temporizador de recordatorio (2.5 minutos = 150000ms)
+      startReminderTimer();
     }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Limpiar temporizador de recordatorio al desmontar
+  useEffect(() => {
+    return () => {
+      if (reminderTimerRef.current) {
+        clearTimeout(reminderTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Iniciar temporizador de recordatorio
+  const startReminderTimer = () => {
+    // Limpiar temporizador anterior si existe
+    if (reminderTimerRef.current) {
+      clearTimeout(reminderTimerRef.current);
+    }
+
+    // Configurar nuevo temporizador (2.5 minutos)
+    reminderTimerRef.current = setTimeout(() => {
+      // Solo enviar recordatorio si:
+      // 1. El usuario NO ha respondido
+      // 2. El estado sigue siendo 'initial'
+      // 3. No se ha enviado recordatorio antes
+      if (!hasUserResponded && conversationState === 'initial' && !reminderSent) {
+        sendAdriMessage(MESSAGES.reminderMessage);
+        setReminderSent(true);
+      }
+    }, 150000); // 2.5 minutos
+  };
 
   // Reproducir sonido de notificación
   const playNotificationSound = () => {
@@ -172,11 +279,49 @@ const ChatAdri = () => {
 
   // Procesar respuesta del usuario
   const processUserResponse = async (text) => {
+    // Marcar que el usuario ha respondido
+    if (!hasUserResponded) {
+      setHasUserResponded(true);
+      // Cancelar temporizador de recordatorio
+      if (reminderTimerRef.current) {
+        clearTimeout(reminderTimerRef.current);
+      }
+    }
+
+    // PRIORIDAD MÁXIMA: Extraer email PRIMERO (detecta @ automáticamente)
+    const extractedEmail = extractEmail(text);
     const intent = detectIntent(text);
-    const lowerText = text.toLowerCase();
+
+    // ⭐ DETECCIÓN AUTOMÁTICA DE EMAIL - MÁXIMA PRIORIDAD
+    // Si se detecta un email en el mensaje, procesarlo inmediatamente
+    // sin importar el estado o la intención
+    if (extractedEmail) {
+      // Solo si NO estamos en estado 'completed' (para evitar procesar emails duplicados)
+      if (conversationState !== 'completed') {
+        // Mensaje de verificación
+        sendAdriMessage(MESSAGES.verifyingEmail, 500);
+
+        // Después de un breve delay, confirmar
+        setTimeout(() => {
+          setConversationState('completed');
+          const emailMessage = MESSAGES.emailVerified.replace('{email}', extractedEmail);
+          sendAdriMessage(emailMessage, 1500);
+          sendLeadNotification(extractedEmail);
+        }, 2000);
+        return;
+      }
+    }
 
     // Estado inicial - esperando respuesta sobre el catálogo
     if (conversationState === 'initial') {
+      // NUEVA: Usuario pregunta sobre el método de envío
+      if (intent === 'askingAboutDelivery') {
+        sendAdriMessage(MESSAGES.deliveryMethodClarification);
+        setConversationState('waiting_choice');
+        return;
+      }
+
+      // Flujo normal
       if (intent === 'affirmative') {
         setConversationState('waiting_choice');
         sendAdriMessage(MESSAGES.catalogRequest);
@@ -188,8 +333,11 @@ const ChatAdri = () => {
       } else if (intent === 'goodbye') {
         setConversationState('completed');
         sendAdriMessage(MESSAGES.goodbye);
+      } else if (intent === 'greeting') {
+        // Si el usuario solo saluda, re-ofrecer el catálogo
+        sendAdriMessage("¡Hola! 😊 ¿Te gustaría recibir nuestro catálogo completo con más de 500 productos promocionales?");
       } else {
-        // Si no entendemos, repetir la pregunta
+        // Si no entendemos, repetir la pregunta de manera amigable
         sendAdriMessage("Perdón, no entendí bien. ¿Te gustaría recibir nuestro catálogo con más de 500 productos promocionales?");
       }
       return;
@@ -197,19 +345,16 @@ const ChatAdri = () => {
 
     // Esperando elección: email o whatsapp
     if (conversationState === 'waiting_choice') {
-      if (intent === 'email' || isValidEmail(text)) {
-        if (isValidEmail(text)) {
-          // Si directamente envió el email válido - aceptarlo
-          setConversationState('completed');
-          const emailMessage = MESSAGES.emailReceived.replace('{email}', text);
-          sendAdriMessage(emailMessage);
-          // Enviar notificación al equipo de PromoGimmicks
-          sendLeadNotification(text);
-        } else {
-          // Si eligió email pero no lo envió
-          setConversationState('waiting_email');
-          sendAdriMessage(MESSAGES.askEmail);
-        }
+      // NUEVA: Usuario pregunta sobre el método de envío (nuevamente)
+      if (intent === 'askingAboutDelivery') {
+        sendAdriMessage(MESSAGES.deliveryMethodClarification);
+        return;
+      }
+
+      if (intent === 'email') {
+        // Si eligió email pero no lo envió
+        setConversationState('waiting_email');
+        sendAdriMessage(MESSAGES.askEmail);
       } else if (intent === 'whatsapp') {
         setConversationState('completed');
         sendAdriMessage(MESSAGES.whatsappOption);
@@ -217,7 +362,7 @@ const ChatAdri = () => {
         setConversationState('completed');
         sendAdriMessage(MESSAGES.goodbye);
       } else {
-        // Si no entendemos, repetir opciones
+        // Si no entendemos, repetir opciones de manera más directa
         sendAdriMessage("¿Prefieres que te envíe el catálogo por correo electrónico o por WhatsApp?");
       }
       return;
@@ -225,17 +370,8 @@ const ChatAdri = () => {
 
     // Esperando email
     if (conversationState === 'waiting_email') {
-      if (isValidEmail(text)) {
-        // Email tiene formato válido - aceptarlo
-        setConversationState('completed');
-        const emailMessage = MESSAGES.emailReceived.replace('{email}', text);
-        sendAdriMessage(emailMessage);
-        // Enviar notificación al equipo de PromoGimmicks
-        sendLeadNotification(text);
-      } else {
-        // Email con formato inválido
-        sendAdriMessage(MESSAGES.emailInvalidFormat);
-      }
+      // Email con formato inválido - pedir nuevamente
+      sendAdriMessage(MESSAGES.emailInvalidFormat);
       return;
     }
 
@@ -435,7 +571,7 @@ const ChatAdri = () => {
                           : 'bg-white text-gray-800 border border-gray-200 rounded-tl-none shadow-sm'
                       }`}
                     >
-                      <p className="text-xs md:text-sm leading-relaxed break-words">{message.text}</p>
+                      <div className="text-xs md:text-sm leading-relaxed break-words">{renderTextWithLinks(message.text)}</div>
                     </div>
                     {/* Timestamp */}
                     <span className={`text-[10px] md:text-xs text-gray-500 mt-1 px-1 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
