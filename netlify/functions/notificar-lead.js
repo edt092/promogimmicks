@@ -1,11 +1,17 @@
 // netlify/functions/notificar-lead.js
 
+// Usaremos Nodemailer, una librería muy popular para enviar correos en Node.js
 const nodemailer = require('nodemailer');
 
 // La función principal que Netlify ejecutará
 exports.handler = async function(event, context) {
+  // Log de inicio
+  console.log('🚀 Función notificar-lead iniciada');
+  console.log('📨 Método HTTP:', event.httpMethod);
+
   // 1. Solo permitir peticiones POST
   if (event.httpMethod !== 'POST') {
+    console.log('❌ Método no permitido:', event.httpMethod);
     return {
       statusCode: 405,
       body: JSON.stringify({ message: 'Método no permitido' }),
@@ -14,31 +20,55 @@ exports.handler = async function(event, context) {
 
   try {
     // 2. Extraer el correo del cuerpo de la petición
+    console.log('📦 Body recibido:', event.body);
     const { email: userEmail, asunto } = JSON.parse(event.body);
+    console.log('📧 Email del usuario:', userEmail);
+    console.log('📝 Asunto:', asunto);
 
+    // Validar que el email fue proporcionado
     if (!userEmail) {
+      console.log('❌ Email no proporcionado');
       return {
         statusCode: 400,
         body: JSON.stringify({ message: 'El correo es obligatorio' }),
       };
     }
 
-    // 3. Configurar el transportador de correo (¡Usa Variables de Entorno!)
-    // Estas variables las configurarás en el panel de Netlify, no aquí.
+    // 3. Verificar variables de entorno
+    console.log('🔧 Verificando variables de entorno...');
+    console.log('   EMAIL_HOST:', process.env.EMAIL_HOST ? '✅ Configurado' : '❌ NO configurado');
+    console.log('   EMAIL_USER:', process.env.EMAIL_USER ? '✅ Configurado' : '❌ NO configurado');
+    console.log('   EMAIL_PASS:', process.env.EMAIL_PASS ? '✅ Configurado' : '❌ NO configurado');
+
+    if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.error('❌ Variables de entorno faltantes');
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          message: 'Error de configuración: Variables de entorno faltantes',
+          details: 'Por favor configura EMAIL_HOST, EMAIL_USER y EMAIL_PASS en Netlify'
+        }),
+      };
+    }
+
+    // 4. Configurar el transportador de correo
+    console.log('⚙️ Configurando transportador de correo...');
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: 465,
       secure: true, // true para puerto 465
       auth: {
-        user: process.env.EMAIL_USER, // Tu correo de envío
-        pass: process.env.EMAIL_PASS, // Tu contraseña de aplicación
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
-    // 4. Enviar el correo de notificación
-    await transporter.sendMail({
+    console.log('✅ Transportador configurado correctamente');
+
+    // 5. Preparar contenido del correo
+    const mailOptions = {
       from: `"Chat Web PromoGimmicks 🤖" <${process.env.EMAIL_USER}>`,
-      to: 'info@promogimmicks.com', // Correo que recibe las notificaciones
+      to: 'info@promogimmicks.com',
       subject: asunto || 'Nuevo Lead: Solicitud de Catálogo 🚀',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
@@ -68,21 +98,44 @@ exports.handler = async function(event, context) {
           </div>
         </div>
       `,
-    });
+    };
 
-    // 5. Responder al frontend que todo fue un éxito
+    console.log('📨 Preparando envío de correo...');
+    console.log('   De:', mailOptions.from);
+    console.log('   Para:', mailOptions.to);
+    console.log('   Asunto:', mailOptions.subject);
+
+    // 6. Enviar el correo de notificación
+    console.log('📤 Enviando correo...');
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log('✅ ¡Correo enviado exitosamente!');
+    console.log('📬 Message ID:', info.messageId);
+    console.log('📊 Response:', info.response);
+
+    // 7. Responder al frontend que todo fue un éxito
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Notificación enviada con éxito' }),
+      body: JSON.stringify({
+        message: 'Notificación enviada con éxito',
+        messageId: info.messageId,
+        userEmail: userEmail
+      }),
     };
 
   } catch (error) {
-    console.error('Error al enviar el correo:', error);
+    // Log detallado del error
+    console.error('❌ ERROR CRÍTICO al enviar el correo:');
+    console.error('   Mensaje:', error.message);
+    console.error('   Stack:', error.stack);
+    console.error('   Code:', error.code);
+
     return {
       statusCode: 500,
       body: JSON.stringify({
         message: 'Error interno al enviar la notificación.',
-        error: error.message
+        error: error.message,
+        code: error.code || 'UNKNOWN_ERROR'
       }),
     };
   }

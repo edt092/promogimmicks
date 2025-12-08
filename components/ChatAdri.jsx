@@ -26,6 +26,9 @@ const MESSAGES = {
 
   // Despedida
   goodbye: "¡Gracias por contactarnos! Recuerda que puedes solicitar el catálogo en cualquier momento o escribirnos por WhatsApp al +593 99 859 4123. ¡Que tengas un excelente día!",
+
+  // Mensaje de error de validación de email (amable)
+  emailInvalidFormat: "Veo que el formato del correo no es del todo correcto. ¿Podrías verificarlo? Debe ser algo como: tuempresa@ejemplo.com 😊",
 };
 
 // Palabras clave para detección de intenciones
@@ -38,10 +41,14 @@ const KEYWORDS = {
   goodbye: ['adiós', 'adios', 'chao', 'bye', 'hasta luego', 'gracias', 'nos vemos'],
 };
 
-// Función para validar email simple
+// Función para validar email con regex mejorada
 const isValidEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  // Regex más estricta que valida:
+  // - Caracteres alfanuméricos, puntos, guiones y guiones bajos antes del @
+  // - Dominio con al menos un punto
+  // - TLD de al menos 2 caracteres
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email.trim());
 };
 
 // Función para enviar notificación al equipo de PromoGimmicks
@@ -164,7 +171,7 @@ const ChatAdri = () => {
   };
 
   // Procesar respuesta del usuario
-  const processUserResponse = (text) => {
+  const processUserResponse = async (text) => {
     const intent = detectIntent(text);
     const lowerText = text.toLowerCase();
 
@@ -192,7 +199,7 @@ const ChatAdri = () => {
     if (conversationState === 'waiting_choice') {
       if (intent === 'email' || isValidEmail(text)) {
         if (isValidEmail(text)) {
-          // Si directamente envió el email
+          // Si directamente envió el email válido - aceptarlo
           setConversationState('completed');
           const emailMessage = MESSAGES.emailReceived.replace('{email}', text);
           sendAdriMessage(emailMessage);
@@ -219,13 +226,15 @@ const ChatAdri = () => {
     // Esperando email
     if (conversationState === 'waiting_email') {
       if (isValidEmail(text)) {
+        // Email tiene formato válido - aceptarlo
         setConversationState('completed');
         const emailMessage = MESSAGES.emailReceived.replace('{email}', text);
         sendAdriMessage(emailMessage);
         // Enviar notificación al equipo de PromoGimmicks
         sendLeadNotification(text);
       } else {
-        sendAdriMessage("Por favor, escribe un correo electrónico válido (ejemplo: tuempresa@email.com)");
+        // Email con formato inválido
+        sendAdriMessage(MESSAGES.emailInvalidFormat);
       }
       return;
     }
@@ -275,7 +284,7 @@ const ChatAdri = () => {
       <AnimatePresence>
         {!isOpen && (
           <motion.div
-            className="fixed bottom-3 right-3 md:bottom-8 md:right-8 z-[60]"
+            className="fixed bottom-4 right-3 md:bottom-8 md:right-8 z-40"
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
@@ -328,8 +337,8 @@ const ChatAdri = () => {
               stiffness: 260,
               damping: 20
             }}
-            className="fixed bottom-16 right-3 w-[90vw] sm:w-[85vw] md:bottom-32 md:right-8 md:w-full md:max-w-md z-[55] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-200"
-            style={{ maxHeight: 'calc(100vh - 80px)', height: 'auto' }}
+            className="fixed bottom-4 right-3 w-[90vw] sm:w-[85vw] md:bottom-8 md:right-8 md:w-full md:max-w-md z-40 bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden border border-gray-200"
+            style={{ height: '500px', maxHeight: 'calc(100vh - 100px)' }}
           >
             {/* Header - Responsive */}
             <div className="bg-gradient-to-r from-blue-500 to-cyan-500 p-3 md:p-4 flex items-center justify-between">
@@ -389,7 +398,7 @@ const ChatAdri = () => {
             </div>
 
             {/* Mensajes - Responsive */}
-            <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-gray-50" style={{ minHeight: '200px', maxHeight: '60vh' }}>
+            <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-gray-50">
               {messages.map((message, index) => (
                 <motion.div
                   key={index}
