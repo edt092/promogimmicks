@@ -12,7 +12,7 @@ interface Product {
   descripcion_corta: string;
   imagen_url: string;
   precio?: number;
-  fuente: string;
+  fuente?: string;
 }
 
 interface ProductCardProps {

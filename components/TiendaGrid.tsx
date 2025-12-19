@@ -113,7 +113,7 @@ export default function TiendaGrid() {
                       <span className="font-semibold text-blue-900">{filteredProducts.length}</span> producto{filteredProducts.length !== 1 ? 's' : ''} encontrado{filteredProducts.length !== 1 ? 's' : ''}
                     </>
                   ) : (
-                    <span className="text-amber-600">No se encontraron productos que coincidan con "{searchTerm}"</span>
+                    <span className="text-amber-600">No se encontraron productos que coincidan con &quot;{searchTerm}&quot;</span>
                   )}
                 </p>
               </div>
