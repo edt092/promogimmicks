@@ -1,13 +1,19 @@
-# Configuración de Netlify para Next.js
+# Configuración de Netlify para Next.js (Static Export)
 
 [build]
-  # Comando para construir el proyecto Next.js
+  # Comando para construir el proyecto Next.js con exportación estática
   command = "npm run build"
-  # Next.js usa el plugin de Netlify automáticamente
-  publish = ".next"
+  # Next.js con output:'export' genera archivos en 'out'
+  publish = "out"
 
 # Configuración de funciones serverless
 [functions]
   directory = "netlify/functions"
   # Node version compatible
   node_bundler = "esbuild"
+
+# Redirects para manejar rutas de Next.js
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
