@@ -17,11 +17,11 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { href: '#inicio', label: 'Inicio' },
-    { href: '#productos-virales', label: 'Productos Virales' },
-    { href: '#catalogos', label: 'Catálogos' },
-    { href: '#servicios', label: 'Servicios' },
-    { href: '#contacto', label: 'Hablemos' },
+    { href: '/', label: 'Inicio' },
+    { href: '/tienda', label: 'Tienda' },
+    { href: '/#catalogos', label: 'Catálogos' },
+    { href: '/#servicios', label: 'Servicios' },
+    { href: '/#contacto', label: 'Hablemos' },
   ];
 
   return (
@@ -35,7 +35,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#inicio" className="flex items-center space-x-2">
+          <a href="/" className="flex items-center space-x-2">
             <span className="text-2xl md:text-3xl font-bold text-blue-900">
               PromoGimmicks
             </span>
