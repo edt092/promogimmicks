@@ -11,6 +11,8 @@ export async function generateStaticParams() {
   }));
 }
 
+const SITE_URL = 'https://promogimmicks.com';
+
 // Generar metadata para SEO
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const product = productsData.find(p => p.slug === params.slug);
@@ -21,6 +23,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
   }
 
+  const absoluteImageUrl = `${SITE_URL}${product.imagen_url}`;
+
   return {
     title: `${product.nombre} | PromoGimmicks`,
     description: product.descripcion_corta,
@@ -29,10 +33,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       title: `${product.nombre} | PromoGimmicks`,
       description: product.descripcion_corta,
       type: 'website',
-      url: `https://promogimmicks.com/tienda/${product.slug}`,
+      url: `${SITE_URL}/tienda/${product.slug}`,
       images: [
         {
-          url: product.imagen_url,
+          url: absoluteImageUrl,
           width: 800,
           height: 800,
           alt: product.nombre,
@@ -43,7 +47,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       card: 'summary_large_image',
       title: `${product.nombre} | PromoGimmicks`,
       description: product.descripcion_corta,
-      images: [product.imagen_url],
+      images: [absoluteImageUrl],
     },
   };
 }
