@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { Search, Filter, X, ShoppingCart } from 'lucide-react';
+import { Search, X, ShoppingCart } from 'lucide-react';
 import ProductCard from './ProductCard';
 import productsDataRaw from '../data/products.json';
 
@@ -26,49 +26,20 @@ const PRODUCTS_PER_PAGE = 20;
 
 export default function TiendaGrid() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Todas');
   const [visibleProducts, setVisibleProducts] = useState(PRODUCTS_PER_PAGE);
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
 
-  const categories = useMemo(() => {
-    const catsInData = Array.from(new Set(productsData.map(p => p.categoria)));
-    const orderedCats = [
-      'Todas',
-      'Accesorios',
-      'Artículos de Escritura',
-      'Bolsos y Mochilas',
-      'Deportes y Recreación',
-      'Drinkware',
-      'Eco',
-      'Hogar',
-      'Oficina',
-      'Salud y Bienestar',
-      'Tecnología',
-      'Textil y Vestuario'
-    ];
-    return orderedCats.filter(cat => cat === 'Todas' || catsInData.includes(cat));
-  }, []);
-
-  const categoryCount = useMemo(() => {
-    const counts: Record<string, number> = { 'Todas': productsData.length };
-    productsData.forEach(p => {
-      counts[p.categoria] = (counts[p.categoria] || 0) + 1;
-    });
-    return counts;
-  }, []);
-
   const filteredProducts = useMemo(() => {
+    if (searchTerm === '') return productsData;
+
     return productsData.filter(product => {
-      const matchesSearch = searchTerm === '' ||
-        product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      return product.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.descripcion_corta.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.categoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (product.codigo && product.codigo.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesCategory = selectedCategory === 'Todas' || product.categoria === selectedCategory;
-      return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm]);
 
   const displayedProducts = useMemo(() => {
     return filteredProducts.slice(0, visibleProducts);
@@ -76,7 +47,7 @@ export default function TiendaGrid() {
 
   useEffect(() => {
     setVisibleProducts(PRODUCTS_PER_PAGE);
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm]);
 
   const loadMore = useCallback(() => {
     if (isLoading || visibleProducts >= filteredProducts.length) return;
@@ -102,27 +73,15 @@ export default function TiendaGrid() {
     return () => observer.disconnect();
   }, [loadMore]);
 
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
-    setIsFilterOpen(false);
-  };
-
-  const clearFilters = () => {
-    setSearchTerm('');
-    setSelectedCategory('Todas');
-  };
-
-  const hasActiveFilters = searchTerm !== '' || selectedCategory !== 'Todas';
-
   return (
     <div className="min-h-screen">
       <div className="sticky top-16 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 py-4 -mx-4 px-4 md:-mx-6 md:px-6 lg:-mx-8 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+          <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
             <div className="relative flex-1">
               <input
                 type="text"
-                placeholder="Buscar productos..."
+                placeholder="Buscar productos, categorías..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-10 py-3.5 text-base border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50 focus:bg-white"
@@ -138,90 +97,13 @@ export default function TiendaGrid() {
               )}
             </div>
 
-            <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="md:hidden flex items-center justify-center gap-2 px-4 py-3.5 bg-blue-900 text-white rounded-xl font-medium"
-            >
-              <Filter size={18} />
-              Filtrar
-              {selectedCategory !== 'Todas' && (
-                <span className="bg-amber-500 text-xs px-2 py-0.5 rounded-full">1</span>
-              )}
-            </button>
-
-            <div className="hidden md:flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => handleCategorySelect(category)}
-                  className={`whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
-                    selectedCategory === category
-                      ? 'bg-blue-900 text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {category}
-                  <span className={`ml-1.5 text-xs ${selectedCategory === category ? 'text-blue-200' : 'text-gray-500'}`}>
-                    ({categoryCount[category] || 0})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {isFilterOpen && (
-            <div className="md:hidden mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <div className="flex items-center justify-between mb-3">
-                <span className="font-semibold text-gray-900">Categorías</span>
-                <button onClick={() => setIsFilterOpen(false)} className="p-1 hover:bg-gray-200 rounded-full">
-                  <X size={18} />
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => handleCategorySelect(category)}
-                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left ${
-                      selectedCategory === category
-                        ? 'bg-blue-900 text-white'
-                        : 'bg-white text-gray-700 border border-gray-200 hover:border-blue-300'
-                    }`}
-                  >
-                    {category}
-                    <span className={`ml-1 text-xs ${selectedCategory === category ? 'text-blue-200' : 'text-gray-400'}`}>
-                      ({categoryCount[category] || 0})
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center gap-2 flex-wrap">
-              {hasActiveFilters && (
-                <button
-                  onClick={clearFilters}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-full text-sm font-medium hover:bg-red-100 transition-colors"
-                >
-                  <X size={14} />
-                  Limpiar filtros
-                </button>
-              )}
-              {selectedCategory !== 'Todas' && (
-                <span className="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                  {selectedCategory}
-                </span>
-              )}
-              {searchTerm && (
-                <span className="px-3 py-1.5 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
-                  &quot;{searchTerm}&quot;
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 text-center sm:text-right whitespace-nowrap">
               <span className="font-semibold text-gray-900">{filteredProducts.length}</span> productos
+              {searchTerm && (
+                <span className="ml-2 text-amber-600">
+                  para &quot;{searchTerm}&quot;
+                </span>
+              )}
             </p>
           </div>
         </div>
@@ -266,10 +148,10 @@ export default function TiendaGrid() {
               <ShoppingCart className="mx-auto text-gray-300 mb-6" size={80} />
               <h3 className="text-2xl font-bold text-gray-700 mb-3">No encontramos productos</h3>
               <p className="text-gray-500 text-base mb-6">
-                {searchTerm ? `No hay resultados para "${searchTerm}"` : `No hay productos en la categoría ${selectedCategory}`}
+                No hay resultados para &quot;{searchTerm}&quot;
               </p>
               <button
-                onClick={clearFilters}
+                onClick={() => setSearchTerm('')}
                 className="bg-blue-900 hover:bg-blue-800 text-white px-8 py-3 rounded-lg font-semibold transition-colors"
               >
                 Ver todos los productos
