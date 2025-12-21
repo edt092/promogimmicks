@@ -63,7 +63,7 @@ export default function TiendaPromo() {
 
   const handleWhatsApp = () => {
     const mensaje = "Hola! Me interesa cotizar productos promocionales para mi empresa.";
-    window.open(`https://wa.me/593999999999?text=${encodeURIComponent(mensaje)}`, '_blank');
+    window.open(`https://wa.me/593998594123?text=${encodeURIComponent(mensaje)}`, '_blank');
   };
 
   return (

@@ -52,7 +52,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
     e.preventDefault();
     e.stopPropagation();
     const mensaje = `Hola! Me interesa cotizar el producto: ${product.nombre}`;
-    const whatsappUrl = `https://wa.me/593999999999?text=${encodeURIComponent(mensaje)}`;
+    const whatsappUrl = `https://wa.me/593998594123?text=${encodeURIComponent(mensaje)}`;
     window.open(whatsappUrl, '_blank');
   };
 

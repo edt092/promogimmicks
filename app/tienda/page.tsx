@@ -1,7 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TiendaGrid from '@/components/TiendaGrid';
-import ChatAdri from '@/components/ChatAdri';
 
 export const metadata = {
   title: 'Tienda - PromoGimmicks | Productos Promocionales',
@@ -75,7 +74,6 @@ export default function TiendaPage() {
       </section>
 
       <Footer />
-      <ChatAdri />
     </main>
   );
 }

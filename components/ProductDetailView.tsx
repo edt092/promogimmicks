@@ -30,7 +30,7 @@ export default function ProductDetailView({ product }: ProductDetailViewProps) {
 
   const handleCotizar = () => {
     const mensaje = `Hola! Me interesa cotizar el producto: ${product.nombre}\n\nCategoría: ${product.categoria}${product.codigo ? `\nCódigo: ${product.codigo}` : ''}\n\n¿Podrían enviarme información sobre precios, cantidades mínimas y opciones de personalización?`;
-    const whatsappUrl = `https://wa.me/593999999999?text=${encodeURIComponent(mensaje)}`;
+    const whatsappUrl = `https://wa.me/593998594123?text=${encodeURIComponent(mensaje)}`;
     window.open(whatsappUrl, '_blank');
   };
 

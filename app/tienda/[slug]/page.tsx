@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import ChatAdri from '@/components/ChatAdri';
 import ProductDetailView from '@/components/ProductDetailView';
 import productsData from '@/data/products.json';
 
@@ -65,7 +64,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       </div>
 
       <Footer />
-      <ChatAdri />
     </main>
   );
 }
