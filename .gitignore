@@ -34,3 +34,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# scraper (herramientas de desarrollo)
+/promo-scraper/
+
+# Claude Code local settings
+/.claude/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Local SVG placeholders
+/public/img/blog/*.svg
