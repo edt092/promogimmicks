@@ -41,6 +41,11 @@ next-env.d.ts
 # Claude Code local settings
 /.claude/
 
+# Data files (scraping y temporales)
+/data/backups/
+/data/*_scraped.json
+/data/products_merged.json
+
 # Python cache
 __pycache__/
 *.pyc

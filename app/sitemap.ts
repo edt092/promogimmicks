@@ -27,6 +27,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
+  // Obtener categorías únicas
+  const uniqueCategories = Array.from(new Set(productsData.map(p => p.categoria_slug)))
+
+  // Páginas de categorías
+  const categoryPages: MetadataRoute.Sitemap = uniqueCategories.map((categorySlug) => ({
+    url: `${SITE_URL}/tienda/categoria/${categorySlug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.85,
+  }))
+
   // Páginas de productos
   const productPages: MetadataRoute.Sitemap = productsData.map((product) => ({
     url: `${SITE_URL}/tienda/${product.slug}`,
@@ -43,5 +54,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }))
 
-  return [...staticPages, ...productPages, ...blogPages]
+  return [...staticPages, ...categoryPages, ...productPages, ...blogPages]
 }
