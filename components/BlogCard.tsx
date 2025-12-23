@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Clock, Tag, ArrowRight, Calendar } from 'lucide-react';
 
@@ -24,6 +24,13 @@ interface BlogCardProps {
 export default function BlogCard({ post }: BlogCardProps) {
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current?.complete) {
+      setIsLoaded(true);
+    }
+  }, []);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -46,6 +53,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         )}
 
         <img
+          ref={imgRef}
           src={imageError ? "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&h=450&fit=crop&q=80" : post.imagen_destacada}
           alt={post.titulo}
           onError={() => setImageError(true)}
