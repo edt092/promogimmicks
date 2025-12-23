@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Clock, Calendar, Tag, ArrowLeft, Share2, ChevronDown, ChevronUp, User } from 'lucide-react';
 import ProductShowcase from './ProductShowcase';
 import CTABanner from './CTABanner';
+import BlogQuitoContent from './BlogQuitoContent';
 import productsData from '@/data/products.json';
 
 interface BlogPost {
@@ -44,9 +45,21 @@ const getFeaturedProducts = (limit: number = 4) => {
   return featured.slice(0, limit);
 };
 
+// Componente para renderizar contenido específico por slug
+function BlogContentBySlug({ slug }: { slug: string }) {
+  if (slug === 'productos-promocionales-baratos-quito-2025') {
+    return <BlogQuitoContent />;
+  }
+  // El contenido por defecto se renderiza en el componente principal
+  return null;
+}
+
 export default function BlogPostContent({ post }: BlogPostContentProps) {
   const [imageError, setImageError] = useState(false);
   const [tocOpen, setTocOpen] = useState(true);
+
+  // Verificar si este post tiene contenido específico
+  const hasCustomContent = post.slug === 'productos-promocionales-baratos-quito-2025';
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -160,6 +173,11 @@ export default function BlogPostContent({ post }: BlogPostContentProps) {
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Renderizar contenido específico si existe */}
+        {hasCustomContent ? (
+          <BlogContentBySlug slug={post.slug} />
+        ) : (
+          <>
         {/* Table of Contents - Collapsible */}
         <div className="mb-10 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
           <button
@@ -602,6 +620,8 @@ export default function BlogPostContent({ post }: BlogPostContentProps) {
           </section>
 
         </div>
+          </>
+        )}
 
         {/* Tags */}
         <div className="mt-12 pt-8 border-t border-gray-200">
