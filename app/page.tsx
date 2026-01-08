@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
+import Cobertura from '@/components/Cobertura';
 import ProductosVirales from '@/components/ProductosVirales';
 import Catalogos from '@/components/Catalogos';
 import Servicios from '@/components/Servicios';
@@ -12,6 +13,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Navbar />
       <HeroSection />
+      <Cobertura />
       <ProductosVirales />
       <Catalogos />
       <Servicios />

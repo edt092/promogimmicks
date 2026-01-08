@@ -1,35 +1,51 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
-const catalogos = [
+const categorias = [
   {
-    title: 'Premiums',
-    image: '/img/imagenes-catalogos/premium.jpg',
-    link: 'https://www.catalogospromocionales.com/seccion/inicio.html',
+    title: 'Regalos Empresariales',
+    description: 'Obsequios corporativos de alta calidad para fidelizar clientes y reconocer empleados.',
+    image: '/img/imagenes-de-stock/1.jpg',
+    keywords: ['regalos corporativos', 'obsequios empresariales'],
   },
   {
-    title: 'MP',
-    image: '/img/imagenes-catalogos/mp.jpg',
-    link: 'https://www.marpicopromocionales.com/#/',
+    title: 'Textiles Personalizados',
+    description: 'Camisetas, gorras, uniformes y prendas con tu logo bordado o estampado.',
+    image: '/img/imagenes-de-stock/3.jpg',
+    keywords: ['camisetas personalizadas', 'uniformes'],
   },
   {
-    title: 'CDO',
-    image: '/img/imagenes-catalogos/cdo.jpg',
-    link: 'https://colombia.cdopromocionales.com/#',
+    title: 'Artículos de Oficina',
+    description: 'Tazas, termos, libretas, bolígrafos y accesorios de escritorio personalizados.',
+    image: '/img/imagenes-de-stock/5.jpg',
+    keywords: ['tazas personalizadas', 'artículos oficina'],
   },
   {
-    title: 'BS',
-    image: '/img/imagenes-catalogos/bs.jpg',
-    link: 'https://buybeststock.com/',
+    title: 'Maletines y Bolsos',
+    description: 'Mochilas, maletines ejecutivos, bolsas ecológicas y porta laptops con tu marca.',
+    image: '/img/imagenes-de-stock/7.jpg',
+    keywords: ['mochilas personalizadas', 'bolsos corporativos'],
+  },
+  {
+    title: 'Tecnología Promocional',
+    description: 'USB, power banks, audífonos, parlantes y gadgets tecnológicos personalizados.',
+    image: '/img/imagenes-de-stock/9.jpg',
+    keywords: ['USB personalizados', 'power banks'],
+  },
+  {
+    title: 'Reconocimientos',
+    description: 'Trofeos, medallas, placas conmemorativas y premios corporativos personalizados.',
+    image: '/img/imagenes-de-stock/11.jpg',
+    keywords: ['trofeos personalizados', 'reconocimientos'],
   },
 ];
 
 export default function Catalogos() {
   return (
-    <section id="catalogos" className="py-20 bg-slate-50">
+    <section id="categorias" className="py-20 bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -39,54 +55,81 @@ export default function Catalogos() {
           className="text-center mb-12"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mb-4">
-            Nuestros Catálogos
+            Productos Promocionales por Categoría
           </h2>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-            Explora nuestra amplia selección de catálogos especializados con
-            miles de productos promocionales para tu empresa
+            Encuentra el artículo publicitario perfecto para tu campaña de marketing.
+            Miles de opciones en productos promocionales para empresas en Ecuador y Colombia.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {catalogos.map((catalogo, index) => (
-            <motion.a
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categorias.map((categoria, index) => (
+            <motion.article
               key={index}
-              href={catalogo.link}
-              target="_blank"
-              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
             >
-              <div className="relative h-64 overflow-hidden">
+              {/* Imagen de fondo */}
+              <div className="relative h-48 overflow-hidden">
                 <Image
-                  src={catalogo.image}
-                  alt={catalogo.title}
+                  src={categoria.image}
+                  alt={categoria.title}
                   fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
-                {/* Overlay en hover */}
-                <div className="absolute inset-0 bg-blue-900/0 group-hover:bg-blue-900/20 transition-all duration-300"></div>
+                {/* Overlay gradiente */}
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/20 to-transparent"></div>
+
+                {/* Título sobre la imagen */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-xl font-bold text-white drop-shadow-lg">
+                    {categoria.title}
+                  </h3>
+                </div>
               </div>
 
-              <div className="p-6 flex items-center justify-between">
-                <h3 className="text-2xl font-bold text-blue-900 group-hover:text-amber-500 transition-colors duration-300">
-                  {catalogo.title}
-                </h3>
-                <ExternalLink
-                  className="text-gray-400 group-hover:text-amber-500 transition-colors duration-300"
-                  size={20}
-                />
+              {/* Contenido */}
+              <div className="p-5">
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  {categoria.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {categoria.keywords.map((keyword, i) => (
+                    <span
+                      key={i}
+                      className="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-medium"
+                    >
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              {/* Borde animado en hover */}
-              <div className="absolute inset-0 border-4 border-transparent group-hover:border-blue-500 rounded-2xl transition-all duration-300 pointer-events-none"></div>
-            </motion.a>
+              {/* Borde inferior animado */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+            </motion.article>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="text-center mt-12"
+        >
+          <Link
+            href="/tienda"
+            className="inline-flex items-center gap-2 bg-blue-900 hover:bg-blue-800 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+          >
+            Ver todos los productos
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

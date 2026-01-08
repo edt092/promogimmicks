@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, MapPin } from 'lucide-react';
 
 export default function HeroSection() {
   return (
@@ -38,11 +38,28 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl sm:text-2xl md:text-3xl text-white/90 mb-8 max-w-3xl mx-auto"
+            className="text-xl sm:text-2xl md:text-3xl text-white/90 mb-4 max-w-3xl mx-auto"
           >
             Productos promocionales, merchandising e importación de última
             generación
           </motion.p>
+
+          {/* Indicador de ubicaciones de servicio */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="flex flex-wrap justify-center items-center gap-4 mb-8"
+          >
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+              <MapPin className="text-amber-500" size={20} />
+              <span className="text-white font-medium">Ecuador</span>
+            </div>
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
+              <MapPin className="text-amber-500" size={20} />
+              <span className="text-white font-medium">Colombia</span>
+            </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}

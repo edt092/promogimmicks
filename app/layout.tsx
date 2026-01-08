@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 export const metadata: Metadata = {
   title: "PromoGimmicks - Productos Promocionales y Merchandising",
@@ -16,7 +15,6 @@ export default function RootLayout({
     <html lang="es">
       <body>
         {children}
-        <WhatsAppFloat />
       </body>
     </html>
   );

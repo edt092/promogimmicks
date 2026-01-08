@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import productsData from '@/data/products.json'
 import blogPosts from '@/data/blog-posts.json'
+import { colombia, ecuador } from '@/data/geo-data'
 
 const SITE_URL = 'https://promogimmicks.com'
 
@@ -25,6 +26,38 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+  ]
+
+  // Páginas geográficas - Colombia
+  const colombiaPages: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/productos-promocionales-colombia`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    ...colombia.ciudades.map((ciudad) => ({
+      url: `${SITE_URL}/productos-promocionales-colombia/${ciudad.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
+  ]
+
+  // Páginas geográficas - Ecuador
+  const ecuadorPages: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/productos-promocionales-ecuador`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    ...ecuador.ciudades.map((ciudad) => ({
+      url: `${SITE_URL}/productos-promocionales-ecuador/${ciudad.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    })),
   ]
 
   // Obtener categorías únicas
@@ -54,5 +87,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }))
 
-  return [...staticPages, ...categoryPages, ...productPages, ...blogPages]
+  return [...staticPages, ...colombiaPages, ...ecuadorPages, ...categoryPages, ...productPages, ...blogPages]
 }
