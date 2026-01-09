@@ -1,7 +1,68 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ShoppingBag, MessageCircle, Sparkles, Gift, Truck } from 'lucide-react';
+import { ArrowRight, ShoppingBag, MessageCircle, Sparkles, Gift } from 'lucide-react';
+
+// Componente con efecto de brillo dorado dinámico
+function GoldenShimmerBadge() {
+  const [shimmerPosition, setShimmerPosition] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShimmerPosition((prev) => (prev >= 100 ? 0 : prev + 2));
+    }, 30);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-2xl p-8 border border-amber-500/30 overflow-hidden">
+      {/* Efecto de brillo dorado que recorre el borde */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          background: `conic-gradient(from ${shimmerPosition * 3.6}deg at 50% 50%, transparent 0deg, #FFD700 20deg, #FFA500 40deg, transparent 60deg, transparent 360deg)`,
+          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+          maskComposite: 'xor',
+          WebkitMaskComposite: 'xor',
+          padding: '3px',
+        }}
+      />
+
+      {/* Brillo interno animado */}
+      <div
+        className="absolute inset-0 opacity-20 pointer-events-none"
+        style={{
+          background: `linear-gradient(${shimmerPosition * 3.6}deg, transparent 0%, #FFD700 50%, transparent 100%)`,
+        }}
+      />
+
+      <div className="relative z-10 text-center">
+        <Gift className="text-amber-400 mx-auto mb-4" size={48} />
+        <div className="relative inline-block">
+          <span
+            className="text-5xl font-black bg-clip-text text-transparent"
+            style={{
+              backgroundImage: `linear-gradient(90deg, #FFD700 ${shimmerPosition - 20}%, #FFFFFF ${shimmerPosition}%, #FFD700 ${shimmerPosition + 20}%)`,
+              backgroundSize: '200% 100%',
+            }}
+          >
+            100%
+          </span>
+        </div>
+        <p
+          className="text-2xl font-bold mt-2 bg-clip-text text-transparent"
+          style={{
+            backgroundImage: `linear-gradient(90deg, #FFA500 ${shimmerPosition - 30}%, #FFD700 ${shimmerPosition}%, #FFA500 ${shimmerPosition + 30}%)`,
+            backgroundSize: '200% 100%',
+          }}
+        >
+          Personalizables
+        </p>
+      </div>
+    </div>
+  );
+}
 
 interface CTABannerProps {
   variant?: 'primary' | 'secondary' | 'inline' | 'whatsapp';
@@ -109,33 +170,8 @@ export default function CTABanner({
                 </button>
               </div>
             </div>
-            <div className="hidden md:flex justify-center">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-                    <ShoppingBag className="text-amber-400 mb-2" size={24} />
-                    <span className="text-white text-2xl font-bold">199+</span>
-                    <p className="text-gray-400 text-sm">Productos</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-                    <Gift className="text-amber-400 mb-2" size={24} />
-                    <span className="text-white text-2xl font-bold">100%</span>
-                    <p className="text-gray-400 text-sm">Personalizables</p>
-                  </div>
-                </div>
-                <div className="space-y-4 mt-6">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-                    <Sparkles className="text-amber-400 mb-2" size={24} />
-                    <span className="text-white text-2xl font-bold">11</span>
-                    <p className="text-gray-400 text-sm">Categorías</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-                    <Truck className="text-amber-400 mb-2" size={24} />
-                    <span className="text-white text-2xl font-bold">Todo</span>
-                    <p className="text-gray-400 text-sm">Ecuador</p>
-                  </div>
-                </div>
-              </div>
+            <div className="hidden md:flex justify-center items-center">
+              <GoldenShimmerBadge />
             </div>
           </div>
         </div>

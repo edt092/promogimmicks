@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TiendaGrid from '@/components/TiendaGrid';
+import GoldenShimmerText from '@/components/GoldenShimmerText';
 
 export const metadata = {
   title: 'Tienda - PromoGimmicks | Productos Promocionales',
@@ -22,12 +23,6 @@ export default function TiendaPage() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full border border-white/20">
-              <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-              <span className="text-sm md:text-base font-medium">199+ Productos Disponibles</span>
-            </div>
-
             {/* Título */}
             <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight">
               Catálogo de Productos
@@ -40,21 +35,8 @@ export default function TiendaPage() {
               <span className="block mt-2 text-white/90">Personalización garantizada con tu logo.</span>
             </p>
 
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-6 md:gap-12 pt-8">
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-amber-400">199+</div>
-                <div className="text-sm md:text-base text-blue-200 mt-1">Productos</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-amber-400">11</div>
-                <div className="text-sm md:text-base text-blue-200 mt-1">Categorías</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-amber-400">100%</div>
-                <div className="text-sm md:text-base text-blue-200 mt-1">Personalizables</div>
-              </div>
-            </div>
+            {/* 100% Personalizable con efecto dorado */}
+            <GoldenShimmerText />
           </div>
         </div>
 

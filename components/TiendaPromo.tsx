@@ -5,6 +5,53 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ShoppingBag, MessageCircle, ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
+// Componente con efecto de brillo dorado dinámico
+function GoldenShimmerBadge() {
+  const [shimmerPosition, setShimmerPosition] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShimmerPosition((prev) => (prev >= 100 ? 0 : prev + 1.5));
+    }, 25);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="mt-10 pt-8 border-t border-white/20 flex justify-center">
+      <div className="relative text-center">
+        {/* Efecto de brillo de fondo */}
+        <div
+          className="absolute inset-0 rounded-2xl opacity-30 blur-xl"
+          style={{
+            background: `radial-gradient(ellipse at ${shimmerPosition}% 50%, #FFD700 0%, transparent 50%)`,
+          }}
+        />
+
+        <div className="relative">
+          <span
+            className="text-6xl md:text-7xl font-black bg-clip-text text-transparent"
+            style={{
+              backgroundImage: `linear-gradient(90deg, #FFD700 ${shimmerPosition - 30}%, #FFFFFF ${shimmerPosition}%, #FFD700 ${shimmerPosition + 30}%)`,
+              backgroundSize: '200% 100%',
+            }}
+          >
+            100%
+          </span>
+          <p
+            className="text-2xl md:text-3xl font-bold mt-1 bg-clip-text text-transparent"
+            style={{
+              backgroundImage: `linear-gradient(90deg, #FFA500 ${shimmerPosition - 40}%, #FFD700 ${shimmerPosition - 10}%, #FFFFFF ${shimmerPosition}%, #FFD700 ${shimmerPosition + 10}%, #FFA500 ${shimmerPosition + 40}%)`,
+              backgroundSize: '200% 100%',
+            }}
+          >
+            Personalizables
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const featuredProducts = [
   {
     id: 1,
@@ -205,21 +252,8 @@ export default function TiendaPromo() {
                 </button>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 mt-10 pt-8 border-t border-white/20">
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-amber-400">+1000</div>
-                  <div className="text-sm text-blue-200">Productos</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-amber-400">12</div>
-                  <div className="text-sm text-blue-200">Categorías</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-amber-400">24h</div>
-                  <div className="text-sm text-blue-200">Cotización</div>
-                </div>
-              </div>
+              {/* Badge 100% Personalizables */}
+              <GoldenShimmerBadge />
             </motion.div>
           </div>
         </div>
